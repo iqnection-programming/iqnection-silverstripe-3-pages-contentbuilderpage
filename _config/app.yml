@@ -1,0 +1,4 @@
+LeftAndMain:
+  extra_requirements_css:
+    iq-contentbuilder/css/ContentBuilderPage_cms.css:
+      media:screen

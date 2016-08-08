@@ -1,0 +1,19 @@
+{
+	"name": "iqnection-pages/contentbuilderpage",
+	"description": "SilverStripe 3 Content Builder Page",
+	"type": "silverstripe-module",
+	"keywords": ["iqnection","pages"],
+	"authors": [
+		{
+			"name": "IQnection",
+            "homepage": "http://www.iqnection.com"
+		}
+	],
+	"require": {
+		"silverstripe/framework": ">=3",
+		"iqnection-pages/basepages":"*"
+	},
+	"extra": {
+		"installer-name": "iq-contentbuilderpage"
+	}
+}
