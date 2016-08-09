@@ -110,6 +110,7 @@
 		}).height(maxH);		
 	};
 	var chunkSet = function(set,sizeEach){
+		if (set.length<=sizeEach){ return set; }
 		var count=0;
 		var newSet=[];
 		var subSet=[];
@@ -124,6 +125,7 @@
 				count=0;
 			}
 		});
+		if (subSet.length){ newSet.push(subSet); }
 		return newSet;
 	};
 
