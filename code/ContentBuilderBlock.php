@@ -51,7 +51,7 @@ class ContentBuilderBlock extends DataObject
 		$fields->push( new HiddenField('SortOrder',null,$fields->dataFieldByName('SortOrder')->Value()) );
 		$fields->push( new HiddenField('ContentBuilderBlockID',null,$fields->dataFieldByName('ContentBuilderBlockID')->Value()) );
 		
-		$fields->addFieldToTab('Root.Style', TextField::create('BackgroundColor','Background Color')->addExtraClass('colorPicker') );
+		$fields->addFieldToTab('Root.Style', SimpleColorPickerField::create('BackgroundColor','Background Color') );
 		
 		$fields->addFieldToTab('Root.Style', $paddingFields = FieldGroup::create('Padding<br />(ex. 10px or 3%)') );
 		$paddingFields->push( TextField::create('PaddingTop','Top') );
@@ -74,7 +74,7 @@ class ContentBuilderBlock extends DataObject
 			$Border_Group->push( HeaderField::create($area.'title',str_replace('Border','',$area),3) );
 			$Border_Group->push( TextField::create($area.'[width]','Width Pixels (ex. 5)')->setValue(isset($defaults[0])?$defaults[0]:null) );
 			$Border_Group->push( DropdownField::create($area.'[style]','Style',$borderStyles)->setValue(isset($defaults[1])?$defaults[1]:null) );
-			$Border_Group->push( TextField::create($area.'[color]','Color')->setValue(isset($defaults[2])?$defaults[2]:null)->addExtraClass('colorPicker') );
+			$Border_Group->push( SimpleColorPickerField::create($area.'[color]','Color')->setValue(isset($defaults[2])?$defaults[2]:null) );
 			if ($defaults[2])
 			{
 				$Border_Group->push( LiteralField::create($area.'colorpreview','<span style="display:block;padding-top:25px;background-color:'.$defaults[2].';"></span>') );
