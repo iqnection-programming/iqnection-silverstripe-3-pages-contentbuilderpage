@@ -16,6 +16,7 @@ class ContentBuilderRow extends ContentBuilderBlock
 
 	private static $has_one = array(
 		'ContentBuilderPage' => 'ContentBuilderPage',
+		'BackgroundImage' => 'Image'
 	);
 	
 	private static $has_many = array(
@@ -25,6 +26,8 @@ class ContentBuilderRow extends ContentBuilderBlock
 	private static $singular_name = 'Content Row';
 	
 	private static $maximum_columns_per_row = 8;
+	
+	private static $can_hold_blocks = true;
 	
 	function getCMSFields()
 	{		
@@ -37,12 +40,30 @@ class ContentBuilderRow extends ContentBuilderBlock
 			return $fields;
 		}
 
-		// remove teh existing tab and gridfield
+		// remove the existing tab and gridfield
 		$fields->removeByName('ContentBuilderBlocks');
+		// create the grid field
+		$fields->addFieldToTab('Root.Main', $this->GridField());
+
+		$fields->addFieldToTab('Root.Style', UploadField::create('BackgroundImage','Background Image')->setAllowedExtensions(array('jpg','jpeg','png','gif')),'BackgroundColor');
+		
+		
+		$this->extend('updateCMSFields',$fields);
+		return $fields;
+	}
+	
+	protected function GridField()
+	{
 		// create the new config and remove the Add button
-		$gf_config = GridFieldConfig_RecordEditor::create()->addComponents(
-			new GridFieldSortableRows('SortOrder')
-		)->removeComponentsByType('GridFieldAddNewButton');
+		$gf_config = GridFieldConfig_RecordEditor::create()
+			->addComponents( new GridFieldSortableRows('SortOrder')	)
+			->removeComponentsByType('GridFieldAddNewButton')
+			->removeComponentsByType('GridFieldEditButton')
+			->removeComponentsByType('GridFieldDeleteAction')
+			->removeComponentsByType('GridFieldSortableHeader')
+			->addComponent(new GridFieldContentBuilderActionsHandler())
+			;
+		$gf_config->getComponentsByType('GridFieldPaginator')->First()->setItemsPerPage(999);	
 		// get all subclasses for ContentBuilderBlock and add an Add button for each, except the base class
 		foreach(ClassInfo::subclassesFor('ContentBuilderBlock') as $modelClass)
 		{
@@ -56,15 +77,12 @@ class ContentBuilderRow extends ContentBuilderBlock
 			}
 		));
 		// create teh grid field
-		$fields->addFieldToTab('Root.Main', $gf = GridField::create(
+		return GridField::create(
 			'ContentBuilderBlocks',
 			'Content Blocks',
 			$this->ContentBuilderBlocks(),
 			$gf_config
-		));
-
-		$this->extend('updateCMSFields',$fields);
-		return $fields;
+		);
 	}
 	
 	public function canAddAnotherColumn()
@@ -134,22 +152,36 @@ class ContentBuilderRow extends ContentBuilderBlock
 		return $this->renderWith('ContentBuilderRow');
 	}
 	
-	public function GridFieldPreview()
+	public function GridFieldPreview($parentURL,$gridField)
 	{
-		$html = '<div class="cb-row">';
+		$this->_parentURL = $parentURL;
+		$this->_gridField = $gridField;
+		$html = '<div class="cb-row">'.$this->GridFieldTitle();
+		$html .= '<div class="cb-holder-contents">';
+		$html .= $this->GridFieldContents();
+		$html .= '</div>';
+		$html .= '</div>';
+		return $html;
+	}
+	
+	public function GridFieldContents()
+	{
+		$html = '';		
 		if ($this->Sections()->Count())
 		{
+			$childLink = ($this->_parentURL) ? Controller::join_links($this->_parentURL,$this->ID,'ItemEditForm/field/ContentBuilderBlocks/item') : null;
+			$myGridField = $this->GridField();
+			if ($this->_gridField) { $myGridField->setForm($this->_gridField->getForm()); }
 			foreach($this->Sections() as $section)
 			{
-				$html .= $section->GridFieldPreview();
+				$html .= $section->GridFieldPreview($childLink,$myGridField);
 			}
 		}
 		else
 		{
 			$html .= '[ Empty ]';
-		}		
-		$html .= '</div>';
-		return $html;
+		}
+		return $html;		
 	}
 
 	public function CloneBlock()
@@ -165,6 +197,16 @@ class ContentBuilderRow extends ContentBuilderBlock
 			}
 		}
 		return $newItem;
+	}
+	
+	public function CustomStyling()
+	{
+		$styles = parent::CustomStyling();
+		if ($this->BackgroundImage()->Exists())
+		{
+			$styles .= 'background-image:url('.$this->BackgroundImage()->getURL().'); ';
+		}
+		return $styles;
 	}
 }
 

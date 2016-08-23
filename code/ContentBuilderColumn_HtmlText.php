@@ -17,6 +17,10 @@ class ContentBuilderColumn_HtmlText extends ContentBuilderColumn
 	
 	private static $singular_name = 'HTML Text';
 	
+	private static $defaults = array(
+		'Content' => '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>'
+	);
+	
 	public function Contents()
 	{
 		return $this->relObject('Content')->forTemplate();
@@ -29,7 +33,7 @@ class ContentBuilderColumn_HtmlText extends ContentBuilderColumn
 		return $fields;
 	}
 	
-	public function GridFieldPreview()
+	public function GridFieldContents()
 	{
 		return $this->relObject('Content')->Summary(20);
 	}

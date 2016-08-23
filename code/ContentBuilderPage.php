@@ -24,17 +24,22 @@ class ContentBuilderPage extends Page
 			'ContentBuilderRows',
 			'Content Rows',
 			$this->ContentBuilderRows(),
-			GridFieldConfig_RecordEditor::create()
+			$gf_config = GridFieldConfig_RecordEditor::create()
 				->addComponent(new GridFieldSortableRows('SortOrder'))
 				->removeComponentsByType('GridFieldAddNewButton')
+				->removeComponentsByType('GridFieldEditButton')
+				->removeComponentsByType('GridFieldDeleteAction')
+				->removeComponentsByType('GridFieldSortableHeader')
+				->addComponent(new GridFieldContentBuilderActionsHandler())
 				->addComponent(new GridFieldMultiTypeAddNewButton('ContentBuilderRow'))
-				->addComponent(new GridFieldCloneContentBuilderBlockActionButton())
 		));
-		$gridField->getConfig()->getComponentByType('GridFieldDataColumns')->setFieldFormatting(array(
-			'GridFieldPreview' => function($value,$item){
-				return htmlspecialchars_decode($value);
-			}
-		));
+		$gf_config->getComponentsByType('GridFieldPaginator')->First()->setItemsPerPage(999);
+//		$gf_columns = $gridField->getConfig()->getComponentByType('GridFieldDataColumns')
+//			->setFieldFormatting(array(
+//				'GridFieldPreview' => function($value,$item){
+//					return htmlspecialchars_decode($value);
+//				}
+//			));
 		
 		$this->extend('updateCMSFields',$fields);
 		return $fields;

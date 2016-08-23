@@ -13,17 +13,18 @@ class ContentBuilderBlock extends DataObject
 {
 	private static $db = array(
 		'SortOrder' => 'Int',
+		'ReferenceTitle' => 'Varchar(255)',
 		'ExtraCssClass' => 'Varchar(255)',
 		'CustomCSS' => 'Varchar(255)',
 		'PaddingTop' => 'Varchar(10)',
 		'PaddingRight' => 'Varchar(10)',
 		'PaddingBottom' => 'Varchar(10)',
 		'PaddingLeft' => 'Varchar(10)',
-		'BackgroundColor' => 'Varchar(20)',
-		'BorderTop' => 'Varchar(30)',
-		'BorderRight' => 'Varchar(30)',
-		'BorderBottom' => 'Varchar(30)',
-		'BorderLeft' => 'Varchar(30)',
+		'BackgroundColor' => 'Varchar(50)',
+		'BorderTop' => 'Varchar(50)',
+		'BorderRight' => 'Varchar(50)',
+		'BorderBottom' => 'Varchar(50)',
+		'BorderLeft' => 'Varchar(50)',
 	);
 
 	private static $has_one = array(
@@ -32,28 +33,29 @@ class ContentBuilderBlock extends DataObject
 
 	private static $summary_fields = array(
 		'ContentBuilderBlockType' => 'Type',
-		'GridFieldPreview' => 'Contents'
+//		'GridFieldPreview' => 'Contents'
 	);
 	
 	private static $default_sort = "SortOrder ASC";
 	
+	private static $can_hold_blocks = false;
+		
 	function getCMSFields()
 	{
-		Requirements::css(CONTENTBUILDER_DIR."/css/spectrum.css");
-		Requirements::javascript(CONTENTBUILDER_DIR."/javascript/spectrum.js");
 		Requirements::javascript(CONTENTBUILDER_DIR."/javascript/ContentBuilderPage_cms.js");
 		$fields = parent::getCMSFields();
 		$fields->insertBefore( HeaderField::create('contentbuilderblocktype',$this->ContentBuilderBlockType(),2),'ExtraCssClass' );
-		if ($this->ClassName == 'ContentBuilderBlock')
-		{
-			// a type must be selected before we can do anything with it
-		}
+
 		$fields->push( new HiddenField('SortOrder',null,$fields->dataFieldByName('SortOrder')->Value()) );
 		$fields->push( new HiddenField('ContentBuilderBlockID',null,$fields->dataFieldByName('ContentBuilderBlockID')->Value()) );
 		
+		$fields->dataFieldByName('ReferenceTitle')->setTitle('Title')->setRightTitle('for reference only');
+		
+		$fields->addFieldToTab('Root.Style', $fields->dataFieldByName('ExtraCssClass') );
+		$fields->addFieldToTab('Root.Style', $fields->dataFieldByName('CustomCSS') );
 		$fields->addFieldToTab('Root.Style', SimpleColorPickerField::create('BackgroundColor','Background Color') );
 		
-		$fields->addFieldToTab('Root.Style', $paddingFields = FieldGroup::create('Padding<br />(ex. 10px or 3%)') );
+		$fields->addFieldToTab('Root.Style', $paddingFields = FieldGroup::create('Padding')->setRightTitle('ex. 10px or 3%') );
 		$paddingFields->push( TextField::create('PaddingTop','Top') );
 		$paddingFields->push( TextField::create('PaddingRight','Right') );
 		$paddingFields->push( TextField::create('PaddingBottom','Bottom') );
@@ -72,7 +74,7 @@ class ContentBuilderBlock extends DataObject
 			$defaults = explode(' ',$this->{$area});
 			$Border_Group = FieldGroup::create($area);
 			$Border_Group->push( HeaderField::create($area.'title',str_replace('Border','',$area),3) );
-			$Border_Group->push( TextField::create($area.'[width]','Width Pixels (ex. 5)')->setValue(isset($defaults[0])?$defaults[0]:null) );
+			$Border_Group->push( TextField::create($area.'[width]','Width Pixels')->setRightTitle('ex. 5')->setValue(isset($defaults[0])?$defaults[0]:null) );
 			$Border_Group->push( DropdownField::create($area.'[style]','Style',$borderStyles)->setValue(isset($defaults[1])?$defaults[1]:null) );
 			$Border_Group->push( SimpleColorPickerField::create($area.'[color]','Color')->setValue(isset($defaults[2])?$defaults[2]:null) );
 			if ($defaults[2])
@@ -82,11 +84,14 @@ class ContentBuilderBlock extends DataObject
 			$borderFields->push( $Border_Group );
 		}
 		
-		$developer_fields = array(
-			'ExtraCssClass',
-			'CustomCSS'
-		);
-		foreach($developer_fields as $dev_field) { $fields->removeByName($dev_field); }
+		if (!Permission::check('ADMIN'))
+		{
+			$developer_fields = array(
+				'ExtraCssClass',
+				'CustomCSS'
+			);
+			foreach($developer_fields as $dev_field) { $fields->removeByName($dev_field); }
+		}
 		
 		$this->extend('updateCMSFields',$fields);
 		return $fields;
@@ -109,6 +114,13 @@ class ContentBuilderBlock extends DataObject
 				if (empty($_REQUEST[$area]['color'])) $result->error('Please choose a color for '.FormField::name_to_label($area),$area);
 			}
 		}
+		foreach(array('PaddingTop','PaddingRight','PaddingBottom','PaddingLeft') as $area)
+		{
+			if ( ($this->$area) && (!preg_match('/px/',$this->$area)) && (!preg_match('/\%/',$this->$area)) )
+			{
+				$result->error('Please specify "px" or "%" for '.FormField::name_to_label($area),$area);
+			}
+		}
 		return $result;
 	}
 	
@@ -119,9 +131,24 @@ class ContentBuilderBlock extends DataObject
 		{
 			if (isset($_REQUEST[$area]['width']) && !empty($_REQUEST[$area]['width']))
 			{
-				$this->{$area} = preg_replace('/[^0-9]/','',$_REQUEST[$area]['width']).'px '.$_REQUEST[$area]['style'].' '.$_REQUEST[$area]['color'];
+				$this->{$area} = preg_replace('/[^0-9]/','',$_REQUEST[$area]['width']).'px '.$_REQUEST[$area]['style'].' '.str_replace(" ","",$_REQUEST[$area]['color']);
+			}
+			else
+			{
+				$this->{$area} = '';
 			}
 		}
+	}
+	
+	public function Parent()
+	{
+		if ($this->ContentBuilderBlock()->Exists()) return $this->ContentBuilderBlock();		
+	}
+	
+	public function Page()
+	{
+		if ( ($this instanceof ContentBuilderRow) && ($this->ContentBuilderPage()->Exists()) ) return $this->ContentBuilderPage();
+		if ($this->Parent()) return $this->Parent()->Page();
 	}
 	
 	/**
@@ -155,14 +182,13 @@ class ContentBuilderBlock extends DataObject
 		return 'method forTemplate must be called in class '.$this->ClassName;
 	}
 	
-	public function Preview()
+	public function __get($var)
 	{
-		return $this->forTemplate();
-	}
-
-	public function GridFieldPreview()
-	{
-		return null;
+		if ($var == 'Title')
+		{
+			return ($this->ReferenceTitle) ? $this->ReferenceTitle : $this->ContentBuilderBlockType();
+		}
+		return parent::__get($var);
 	}
 	
 	public function CustomStyling()
@@ -184,9 +210,13 @@ class ContentBuilderBlock extends DataObject
 		if ($this->BackgroundColor) $styles[] = 'background-color:'.$this->BackgroundColor;
 		
 		$style = implode('; ',$styles);
+		if ( ($style) && (!preg_match('/\;$/',$style)) ) { $style .= ';'; }
 		
 		// add user styling
 		$style .= $this->CustomCSS;
+		if ( ($style) && (!preg_match('/\;$/',$style)) ) { $style .= ';'; }
+		
+		$this->extend('updateCustomStyling',$style);
 		return $style;
 	}
 	
@@ -199,6 +229,109 @@ class ContentBuilderBlock extends DataObject
 		$newItem->ContentBuilderBlockID = $this->ContentBuilderBlockID;
 		$newItem->write();
 		return $newItem;
+	}
+	
+	protected function GridFieldEditButton($parentURL)
+	{
+		return ($parentURL && $this->canEdit()) 
+//			? '<a href="'.Controller::join_links($parentURL,$this->ID,'edit').'" class="action action-detail edit-link">Edit</a>' 
+			? '<a href="'.Controller::join_links($parentURL,$this->ID,'edit').'" class="content_builder_edit_btn ss-ui-button content-builder-button">Edit</a>' 
+			: null;
+	}
+	
+	protected function GridFieldDeleteButton($gridField)
+	{
+		return ($gridField && $this->canDelete()) 
+			? GridField_FormAction::create($gridField, 'DeleteBlock'.$this->ID, 'Delete','deleteblock',array('RecordID'=>$this->ID))
+				->addExtraClass('ss-ui-button content-builder-button content-builder-button-red content-builder-delete-with-confirm')
+//				->addExtraClass('gridfield-button-delete')
+//				->setAttribute('data-icon','cross-circle')
+				->Field() 
+			: null;
+	}
+		
+	protected function GridFieldCloneButton($gridField)
+	{
+		return ($gridField && $this->canCreate()) 
+			? GridField_FormAction::create($gridField, 'CloneBlock'.$this->ID, 'Clone','cloneblock',array('RecordID'=>$this->ID))
+				->addExtraClass('ss-ui-button content-builder-button')
+				->Field() 
+			: null;
+	}
+	
+	protected function GridFieldMoveButton($gridField)
+	{
+		if (!$moveBlockID = GridFieldContentBuilderActionsHandler::$MoveEnabled) 
+		{		
+			return ($gridField && $this->canEdit()) 
+				? GridField_FormAction::create($gridField, 'MoveBlock'.$this->ID, 'Move','moveblock',array('RecordID'=>$this->ID))
+					->addExtraClass('ss-ui-button content-builder-button')
+					->Field() 
+				: null;
+		}
+	}
+	
+	protected function GridFieldCancelMoveButton($gridField)
+	{
+		return ($gridField && $this->canEdit()) 
+			? GridField_FormAction::create($gridField, 'CancelMoveBlock'.$this->ID, 'Cancel','cancelmoveblock',array('RecordID'=>$this->ID))
+				->addExtraClass('ss-ui-button content-builder-button content-builder-button-red')
+				->Field() 
+			: null;
+	}
+	
+	protected function GridFieldMoveHereButton($gridField)
+	{
+		return ($gridField && $this->canEdit()) 
+			? GridField_FormAction::create($gridField, 'MoveBlockHere'.$this->ID, 'Move Here','moveblockhere',array('ParentID'=>$this->ID,'RecordID'=>GridFieldContentBuilderActionsHandler::$MoveEnabled))
+				->addExtraClass('ss-ui-button content-builder-button content-builder-button-green')
+				->Field() 
+			: null;
+	}
+	
+	protected function GridFieldActions()
+	{
+		// is move enabled
+		if ($moveBlockID = GridFieldContentBuilderActionsHandler::$MoveEnabled)
+		{
+			// are we moving this block
+			if ($moveBlockID == $this->ID)
+			{
+				return $this->GridFieldCancelMoveButton($this->_gridField);
+			}
+			// can this block hold other blocks
+			elseif ($this->Config()->get('can_hold_blocks'))
+			{
+				return $this->GridFieldMoveHereButton($this->_gridField);
+			}
+			return null;
+		}
+		
+		// not moving, provide normal buttons
+		$html = $this->GridFieldEditButton($this->_parentURL);
+		$html .= $this->GridFieldCloneButton($this->_gridField);
+		$html .= $this->GridFieldMoveButton($this->_gridField);
+		$html .= $this->GridFieldDeleteButton($this->_gridField);
+		return $html;
+	}
+	
+	protected function GridFieldContents()
+	{
+		return null;
+	}
+	
+	protected function GridFieldTitle()
+	{
+		return '<h6 class="content_builder_block_title">'.$this->ContentBuilderBlockType().': '.$this->ReferenceTitle.'</h6><div class="content_builder_block_actions">'.$this->GridFieldActions().'</div>';
+	}
+	
+	protected $_parentURL;
+	protected $_gridField;
+	public function GridFieldPreview($parentURL,$gridField)
+	{
+		$this->_parentURL = $parentURL;
+		$this->_gridField = $gridField;
+		return $this->GridFieldTitle().$this->GridFieldContents();
 	}
 }
 

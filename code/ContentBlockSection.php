@@ -16,19 +16,12 @@ class ContentBuilderSection extends ArrayList
 		return ArrayList::create($this->toArray());
 	}
 	
-	public function GridFieldPreview()
+	public function GridFieldPreview($parentURL=null,$gridField=null)
 	{
 		$html .= '<div class="cb-section col-'.$this->Count().'">';
 		foreach($this->toArray() as $block)
 		{
-			if ($block instanceof ContentBuilderRow)
-			{
-				$html .= $block->GridFieldPreview();
-			}
-			else
-			{
-				$html .= '<div class="col">'.$block->ContentBuilderBlockType().'</div>';
-			}
+			$html .= $block->GridFieldPreview($parentURL,$gridField);
 		}
 		$html .= '</div>';
 		return $html;

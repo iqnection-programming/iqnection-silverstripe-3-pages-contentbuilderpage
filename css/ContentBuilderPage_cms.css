@@ -1,24 +1,65 @@
 
-
-.col-GridFieldPreview .cb-row							{ clear:both; width:100%; background:#c4c4c4; padding:5px; padding-bottom:0 !important; }
+.col-GridFieldPreview *									{ -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+.col-GridFieldPreview .cb-row							{ clear:both; width:100%; border:5px solid #c4c4c4; }
 .col-GridFieldPreview .cb-row:after						{ content:"."; display:block; height:0; clear:both; zoom:1; visibility:hidden; }
 
-.col-GridFieldPreview .cb-section						{ clear:both; background:#ddd; padding:5px; margin-bottom:5px; }
+.col-GridFieldPreview .cb-holder-contents				{ border-top:5px solid #c4c4c4; background:#FFF; }
+
+.col-GridFieldPreview .cb-section						{ clear:both; margin-bottom:5px; background:#fff; padding:15px 15px 0; }
 .col-GridFieldPreview .cb-section:after					{ content:"."; display:block; height:0; clear:both; zoom:1; visibility:hidden; }
 
-.col-GridFieldPreview .cb-section > div					{ float:left; width:100%; padding:5px; border:1px solid #999; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
-.col-GridFieldPreview .cb-section > div.col				{ padding:10px; background:#FFF; }
-.col-GridFieldPreview .cb-section.col-2 > div.col		{ width:50%; }
-.col-GridFieldPreview .cb-section.col-3 > div.col		{ width:33.3%; }
-.col-GridFieldPreview .cb-section.col-4 > div.col		{ width:25%; }
-.col-GridFieldPreview .cb-section.col-5 > div.col		{ width:20%; }
-.col-GridFieldPreview .cb-section.col-6 > div.col		{ width:16.6%; }
-.col-GridFieldPreview .cb-section.col-7 > div.col		{ width:14.2%; }
-.col-GridFieldPreview .cb-section.col-8 > div.col		{ width:12.5%; }
-.col-GridFieldPreview .cb-section.col-9 > div.col		{ width:11.1%; }
-.col-GridFieldPreview .cb-section.col-10 > div.col		{ width:10%; }
-.col-GridFieldPreview .cb-section.col-11 > div.col		{ width:9%; }
-.col-GridFieldPreview .cb-section.col-12 > div.col		{ width:8.3%; }
+.col-GridFieldPreview .cb-col							{ float:left; width:100%; border:5px solid #c4c4c4; background:#FFF; margin-bottom:10px; margin-left:2%; }
+.col-GridFieldPreview .cb-section > .cb-col:first-child	{ margin-left:0; }
+.col-GridFieldPreview .cb-section.col-2 > .cb-col		{ width:49%; }
+.col-GridFieldPreview .cb-section.col-3 > .cb-col		{ width:32%; }
+.col-GridFieldPreview .cb-section.col-4 > .cb-col		{ width:23.5%; }
+.col-GridFieldPreview .cb-section.col-5 > .cb-col		{ width:18.4%; }
+.col-GridFieldPreview .cb-section.col-6 > .cb-col		{ width:15%; }
+.col-GridFieldPreview .cb-section.col-7 > .cb-col		{ width:12.5%; }
+.col-GridFieldPreview .cb-section.col-8 > .cb-col		{ width:10.75%; }
+.col-GridFieldPreview .cb-section.col-9 > .cb-col		{ width:9.3%; }
+.col-GridFieldPreview .cb-section.col-10 > .cb-col		{ width:8.2%; }
+.col-GridFieldPreview .cb-section.col-11 > .cb-col		{ width:7.2%; }
+.col-GridFieldPreview .cb-section.col-12 > .cb-col		{ width:6.5%; }
+.col-GridFieldPreview .cb-stacked-col > .cb-holder-contents > .cb-section > .cb-col { margin-left:0; }
 
-.col-GridFieldPreview .cb-section > div.col				{ text-align:center; }
+.col-GridFieldPreview .cb-section > .cb-col				{ text-align:center; }
+
+.col-GridFieldPreview .cb-section > .cb-col > .cb-row		{ border:none; }
+
+.col-GridFieldPreview .content_builder_block_title		{ font-weight:bold; text-align:center; margin:0; padding:3px; background:#c8d3ff; }
+.col-GridFieldPreview .content_builder_block_actions	{ text-align:center; background:#c8d3ff; padding-bottom:4px; }
+
+/*-- Buttons --*/
+.ss-gridfield-table .content_builder_block_actions a.content-builder-button,
+.ss-gridfield-table .content_builder_block_actions button.content-builder-button	{ margin-top: 0px; font-weight: bold; text-decoration: none; line-height: 16px; color: #393939; border: 1px solid #d0d3d5; border-bottom: 1px solid #b5babd; cursor: pointer; white-space: nowrap; text-shadow: white 0 1px 1px;
+	background-color: #e6e6e6;
+    background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+    background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #d9d9d9));
+    background: -moz-linear-gradient(#ffffff, #d9d9d9); 
+	background: -webkit-linear-gradient(#ffffff, #d9d9d9); 
+	background: linear-gradient(#ffffff, #d9d9d9); }
+.ss-gridfield-table .content_builder_block_actions a.content-builder-button:hover,
+.ss-gridfield-table .content_builder_block_actions button.content-builder-button:hover	{ text-decoration: none; -moz-box-shadow: 0 0 5px #b3b3b3; -webkit-box-shadow: 0 0 5px #b3b3b3; box-shadow: 0 0 5px #b3b3b3;
+    background-color: white;
+    background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgi…pZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+    background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #e6e6e6));
+    background: -moz-linear-gradient(#ffffff, #e6e6e6);
+    background: -webkit-linear-gradient(#ffffff, #e6e6e6);
+    background: linear-gradient(#ffffff, #e6e6e6); }
+	
+.ss-gridfield-table .content_builder_block_actions a.content-builder-button.content-builder-button-red,
+.ss-gridfield-table .content_builder_block_actions button.content-builder-button.content-builder-button-red { background: linear-gradient(#FF3B3F, #B90003); color:#FFF; text-shadow:none; }
+.ss-gridfield-table .content_builder_block_actions a.content-builder-button.content-builder-button-red:hover,
+.ss-gridfield-table .content_builder_block_actions button.content-builder-button.content-builder-button-red:hover { background: #B90003; color:#FFF; }
+
+.ss-gridfield-table .content_builder_block_actions a.content-builder-button.content-builder-button-green,
+.ss-gridfield-table .content_builder_block_actions button.content-builder-button.content-builder-button-green { background: linear-gradient(#2f9a09, #007e02); color:#FFF; text-shadow:none; }
+.ss-gridfield-table .content_builder_block_actions a.content-builder-button.content-builder-button-green:hover,
+.ss-gridfield-table .content_builder_block_actions button.content-builder-button.content-builder-button-green:hover { background: #007e02; color:#FFF; }
+
+
+
+
+
 

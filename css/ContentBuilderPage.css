@@ -6,8 +6,6 @@
 
 #cb-area											{ clear:both; }
 
-#cb-area .cb-row									{ clear:both; width:100%; }
-#cb-area .cb-row:after								{ content:"."; display:block; height:0; clear:both; zoom:1; visibility:hidden; }
 
 #cb-area .cb-section								{ clear:both; width:100% !important; }
 #cb-area .cb-section:after							{ content:"."; display:block; height:0; clear:both; zoom:1; visibility:hidden; }
@@ -26,6 +24,9 @@
 #cb-area .cb-section.col-11 > div					{ width:7.2%; }
 #cb-area .cb-section.col-12 > div					{ width:6.5%; }
 
+#cb-area .cb-row									{ clear:both; width:100%; float:none !important; }
+#cb-area .cb-row:after								{ content:"."; display:block; height:0; clear:both; zoom:1; visibility:hidden; }
+
 #cb-area .cb-col.v-align > .cb-col-inside			{ position:relative; top:50%; 
 	-moz-transform: translateY(-50%);
 	-webkit-transform: translateY(-50%);
@@ -36,9 +37,11 @@
 #cb-area .cb-stacked-col > .cb-col					{ height:auto !important; }
 
 .ContentBuilderColumn_Image > div:after				{ content:"."; display:block; height:0; clear:both; zoom:1; visibility:hidden; }
-.ContentBuilderColumn_Image > div > img				{ display:block; }
-.ContentBuilderColumn_Image > div.i-center > img	{ margin:0 auto; }
-.ContentBuilderColumn_Image > div.i-right > img		{ float:right; }
+.ContentBuilderColumn_Image > div img,
+.ContentBuilderColumn_Image > div a					{ display:inline-block; }
+.ContentBuilderColumn_Image > div.i-left			{ text-align:left; }
+.ContentBuilderColumn_Image > div.i-center			{ text-align:center; }
+.ContentBuilderColumn_Image > div.i-right			{ text-align:right; }
 
 /*-- Responsive --*/
 @media(max-width:1300px){
@@ -94,18 +97,6 @@
 }
 
 @media(max-width:600px){
-	#cb-area .cb-section.col-7 > div,
-	#cb-area .cb-section.col-6 > div					{ width:100% !important; clear:left !important; margin-left:0 !important; height:auto !important; }
-	#cb-area .cb-section.col-7 > div.v-align > .cb-col-inside,
-	#cb-area .cb-section.col-6 > div.v-align > .cb-col-inside { top:0; 
-	    -moz-transform: translateY(0);
-		-webkit-transform: translateY(0);
-		-o-transform: translateY(0);
-		-ms-transform: translateY(0);
-		transform: translateY(0) }
-}
-
-@media(max-width:550px){
 	#cb-area .cb-section > div							{ width:100% !important; clear:left !important; margin-left:0 !important; height:auto !important; }
 	#cb-area .cb-section > div.v-align > .cb-col-inside { top:0; 
 	    -moz-transform: translateY(0);
@@ -113,6 +104,7 @@
 		-o-transform: translateY(0);
 		-ms-transform: translateY(0);
 		transform: translateY(0) }
+	.ContentBuilderColumn_Image img						{ float:none !important; margin:0 auto; }
 }
 
 

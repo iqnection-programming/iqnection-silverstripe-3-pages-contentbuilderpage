@@ -12,15 +12,35 @@ class ContentBuilderColumn_Header extends ContentBuilderColumn
 {
 	private static $db = array(
 		'Type' => "Enum('1,2,3,4,5,6','2')",
-		'Align' => "Enum('Left,Center,Right','Left')",
+		'Align' => "Enum('Default,Left,Center,Right','Default')",
+		'FontWeight' => "Enum('Default,Bold,Normal,Light','Default')",
+		'FontStyle' => "Enum('Default,Normal,Italic','Default')",
 		'Content' => 'Text',
 	);
 	
 	private static $singular_name = 'Header';
 	
+	private static $defaults = array(
+		'Content' => 'Content Header'
+	);
+	
 	public function Contents()
 	{
-		return '<h'.$this->Type.' style="text-align:'.$this->Align.';'.$this->CustomCSS.'">'.$this->Content.'</h'.$this->Type.'>';
+		$style = parent::CustomStyling();
+		if ($this->Align != 'Default')
+		{
+			$style .= 'text-align:'.strtolower($this->Align).';';
+		}
+		if ($this->FontWeight != 'Default')
+		{
+			$style .= 'font-weight:'.strtolower($this->FontWeight).';';
+		}
+		if ($this->FontStyle != 'Default')
+		{
+			$style .= 'font-style:'.strtolower($this->FontStyle).';';
+		}
+		$style = ($style) ? ' style="'.$style.'"' : null;
+		return '<h'.$this->Type.$style.'>'.$this->Content.'</h'.$this->Type.'>';
 	}
 	
 	public function getCMSFields()
@@ -36,8 +56,12 @@ class ContentBuilderColumn_Header extends ContentBuilderColumn
 		return $fields;
 	}
 	
-	public function GridFieldPreview()
+	public function GridFieldContents()
 	{
-		return $this->Contents();
+		return '<h'.$this->Type.'>'.$this->Content.'</h'.$this->Type.'>';
 	}
 }
+
+
+
+

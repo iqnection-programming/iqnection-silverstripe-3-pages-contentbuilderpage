@@ -38,9 +38,16 @@ class ContentBuilderColumn extends ContentBuilderBlock
 		return 'method "Contents" must be implimented in class '.$this->ClassName.' to display the content, or create a custom template';
 	}
 	
-	public function GridFieldPreview()
+	protected function GridFieldContents()
 	{
-		return 'Empty Column';
+		return 'method "GridFieldContents" must be implimented in class '.$this->ClassName.' to display the content in the GridField';
+	}
+	
+	public function GridFieldPreview($parentURL,$gridField)
+	{
+		$this->_parentURL = $parentURL;
+		$this->_gridField = $gridField;
+		return '<div class="cb-col">'.$this->GridFieldTitle().$this->GridFieldContents().'</div>';
 	}
 	
 }
