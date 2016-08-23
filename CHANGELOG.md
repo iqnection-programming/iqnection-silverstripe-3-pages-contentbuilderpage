@@ -1,6 +1,9 @@
 ## Package: iqnection-silverstripe-3-pages-contentbuilder
 # Change Log
 
+## [0.0.4]
+- css updates, LinkField requirement
+
 ## [0.0.3]
 - Many improvements & bug fixes
 
