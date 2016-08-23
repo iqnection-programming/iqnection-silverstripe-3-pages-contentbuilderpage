@@ -104,10 +104,8 @@
 		-o-transform: translateY(0);
 		-ms-transform: translateY(0);
 		transform: translateY(0) }
-	.ContentBuilderColumn_Image img						{ float:none !important; margin:0 auto; }
+	.ContentBuilderColumn_Image img						{ float:none !important; margin:0 auto; display:block !important; }
 }
-
-
 
 
 

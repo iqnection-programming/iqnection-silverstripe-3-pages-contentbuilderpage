@@ -9,6 +9,7 @@
 .col-GridFieldPreview .cb-section:after					{ content:"."; display:block; height:0; clear:both; zoom:1; visibility:hidden; }
 
 .col-GridFieldPreview .cb-col							{ float:left; width:100%; border:5px solid #c4c4c4; background:#FFF; margin-bottom:10px; margin-left:2%; }
+.col-GridFieldPreview .cb-col:first-child,
 .col-GridFieldPreview .cb-section > .cb-col:first-child	{ margin-left:0; }
 .col-GridFieldPreview .cb-section.col-2 > .cb-col		{ width:49%; }
 .col-GridFieldPreview .cb-section.col-3 > .cb-col		{ width:32%; }

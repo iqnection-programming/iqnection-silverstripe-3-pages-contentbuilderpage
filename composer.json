@@ -12,7 +12,8 @@
 	"require": {
 		"silverstripe/framework": ">=3",
 		"iqnection-pages/basepages":"*",
-		"iqnection-modules/simplecolorpickerfield" : "*"
+		"iqnection-modules/simplecolorpickerfield" : "*",
+		"iqnection-modules/linkfield" : "*"
 	},
 	"extra": {
 		"installer-name": "iq-contentbuilderpage"

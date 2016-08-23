@@ -106,8 +106,10 @@
 	var matchHeights = function(set){
 		var maxH=0;
 		$(set).css('height','auto').each(function(){
-			maxH=Math.max(maxH,$(this).height());
-		}).height(maxH);		
+			maxH=Math.max(maxH,$(this).outerHeight(false));
+		}).each(function(){
+			$(this).height(maxH - parseInt($(this).css('padding-top')) - parseInt($(this).css('padding-bottom')));
+		});
 	};
 	var chunkSet = function(set,sizeEach){
 		if (set.length<=sizeEach){ return set; }
