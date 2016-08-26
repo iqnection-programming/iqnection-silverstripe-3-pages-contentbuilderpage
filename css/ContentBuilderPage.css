@@ -64,7 +64,6 @@
 	#cb-area .cb-section.col-4 > div					{ width:49%; }
 	#cb-area .cb-section.col-8 > div:nth-child(2n+1),
 	#cb-area .cb-section.col-4 > div:nth-child(2n+1)	{ clear:left; margin-left:0; }
-	#cb-area .cb-section.col-4 > div:nth-child(4)		{ width:100%; margin-left:0; clear:left; }
 	#cb-area .cb-section.col-5 > div					{ width:32%; }
 	#cb-area .cb-section.col-5 > div:nth-child(3n+1)	{ clear:left; margin-left:0; }
 	#cb-area .cb-section.col-5 > div:nth-child(n+4)		{ width:49%; }
